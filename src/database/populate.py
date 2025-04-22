@@ -53,15 +53,15 @@ class CSVDatabaseSeeder:
         :rtype: pd.DataFrame
         """
         data = pd.read_csv(self._csv_file_path)
-        data = data.drop_duplicates(subset=["name", "date"], keep="first")
+        data = data.drop_duplicates(subset=["names", "date_x"], keep="first")
         data["crew"] = data["crew"].fillna("Unknown")
         data["genre"] = data["genre"].fillna("Unknown")
         data["genre"] = data["genre"].str.replace("\u00a0", "", regex=True)
-        data["date"] = data["date"].str.strip()
-        data["date"] = pd.to_datetime(
-            data["date"], format="%m/%d/%Y", errors="coerce"
+        data["date_x"] = data["date_x"].str.strip()
+        data["date_x"] = pd.to_datetime(
+            data["date_x"], format="%m/%d/%Y", errors="coerce"
         )
-        data["date"] = data["date"].dt.date
+        data["date_x"] = data["date_x"].dt.date
         print("Preprocessing csv file")
         return data
 
@@ -87,8 +87,8 @@ class CSVDatabaseSeeder:
                     data.iterrows(), total=data.shape[0], desc="Seeding database"
                 ):
                     movie = MovieModel(
-                        name=row["name"],
-                        date=row["date"],
+                        name=row["names"],
+                        date=row["date_x"],
                         score=float(row["score"]),
                         genre=row["genre"],
                         overview=row["overview"],
@@ -96,7 +96,7 @@ class CSVDatabaseSeeder:
                         orig_title=row["orig_title"],
                         status=row["status"],
                         orig_lang=row["orig_lang"],
-                        budget=float(row["budget"]),
+                        budget=float(row["budget_x"]),
                         revenue=float(row["revenue"]),
                         country=row["country"],
                     )
